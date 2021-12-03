@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>绘制立方体</title>
+  <script src="./three.min.js"></script>
+</head>
+<body>
+  <script>
+    /**
+    01 场景 调用api就可以
+    02 相机： 分类 位置 
+    03 渲染器：大小尺寸 颜色
+    04 几何体：
+    */
+  
+    // 此时就有了个一个场景
+    const scene = new THREE.Scene() 
+
+    // 透视相机，第一个参数视角，第二个参数，纵横比,第三个参数，近点距离。相机距离 近才面（第一个）面距离,第四个参数，远才面（第一个）面距离
+    // 上述代码就是人可以看到1到1000的距离，所以有了近才面，和元才面的2个面
+    const camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 1, 1000) 
+   
+    // 渲染器
+    const renderer = new THREE.WebGLRenderer({
+      antialias: true // 旋转的时候有锯齿，这个属性是抗锯齿
+    })
+    renderer.setClearColor(0xffffff) // 设置颜色
+    renderer.setSize(window.innerWidth, window.innerHeight) // 设置大小
+
+    // 绘制几何体
+    document.body.appendChild(renderer.domElement) // 此时在界面实现了一个canvas
+
+    const geometry = new THREE.BoxGeometry(1, 1, 1) // 绘制立方体，需要提供三个轴的大小 骨架
+
+    const material = new THREE.MeshBasicMaterial({ // 使用眼色给立方体添加蒙层，材质
+      color: 0x285b41, // 需要接受16进制的数值，添加0X就行
+      wireframe: true // 看线条，而不是整体
+    })
+
+    // 现在需要合成 geometry ， material
+    const cube = new THREE.Mesh(geometry, material) // 合成
+    scene.add(cube) // 放到场景里面
+
+    // 设置相机的位置，这样立体图就出来了。单独设置就是看的正面
+    camera.position.z = 4
+
+    // cube.rotation.y = 1 // 旋转下几个面就出来了
+    // 渲染到界面上
+    // renderer.render(scene, camera)
+
+    // 为了让他自动旋转使用requestAnimationFrame。隔几秒自动调用一次
+    
+    function animate() {
+      requestAnimationFrame(animate)
+      cube.rotation.y += 0.01
+      cube.rotation.x += 0.01
+      renderer.render(scene, camera)
+    }
+
+    animate()
+  </script>
+</body>
+</html>

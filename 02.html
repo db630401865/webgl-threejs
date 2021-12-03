@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>轨迹球控制与材质</title>
+  <script src="./three.min.js"></script>
+  <script src="./TrackballControls.js"></script>
+</head>
+
+<body>
+  <script>
+    // 定义全局变量
+    let scene, camera, geometry, mesh, renderer, controls
+
+    // 初始化渲染器
+    function initRenderer() {
+      renderer = new THREE.WebGLRenderer({ antialias: true })  // 使用WebGLRenderer渲染器
+      renderer.setSize(window.innerWidth, window.innerHeight) // 设置大小
+      renderer.setPixelRatio(window.devicePixelRatio) // 高清展示
+      document.body.appendChild(renderer.domElement) // 生成一个canvas
+    }
+
+    // 初始化场景
+    function initScene() {
+      scene = new THREE.Scene() // 生成一个场景
+      const axesHelper = new THREE.AxesHelper(100) // 辅助的坐标系长度
+      scene.add(axesHelper) // 添加到场景里面
+    }
+
+    // 初始化相机
+    function initCamera() {
+      camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000) // 透视相机
+      camera.position.set(0, 0, 15) // 设置相机的位置
+      controls = new THREE.TrackballControls(camera, renderer.domElement) // 设置轨迹球
+    }
+
+    // 初始化模型
+    function initMesh() {
+      geometry = new THREE.BoxGeometry(2, 2, 2) // 盒形几何体
+      // material = new THREE.MeshNormalMaterial() // 一个类型可以吧一个法向量单位去映射成具体的rgb值，这样颜色不断变化，然后变成一个材质贴在不同面上
+      const texture = new THREE.TextureLoader().load('img/crate.gif') // 自己创建的纹理
+      material = new THREE.MeshBasicMaterial({  // 将纹理贴在盒形几何体上
+        map: texture,
+        side: THREE.DoubleSide // 里面外面都加的贴图
+      })
+      mesh = new THREE.Mesh(geometry, material)  // 将集合体和材质放到网格里面
+      scene.add(mesh) // 加入场景
+    }
+
+    // 初始化动画
+    function animate() {
+      requestAnimationFrame(animate)
+      controls.update() // 更新相机位置
+      renderer.render(scene, camera) // 开始渲染
+    }
+
+    // 定义初始化方法
+    function init() {
+      initRenderer()
+      initScene()
+      initCamera()
+      initMesh()
+      animate()
+    }
+
+    init()
+
+  </script>
+</body>
+
+</html>
